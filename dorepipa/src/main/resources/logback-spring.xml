@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE logback>
+<configuration>
+    <include resource="org/springframebaseDir/boot/logging/logback/defaults.xml"/>
+    <!-- ベースディレクトリ -->
+    <property name="baseDir" value="./work"/>
+    <!-- ログ名称 -->
+    <property name="logName" value="pac2017"/>
+    <property name="pepperLogName" value="pac2017_pepper"/>
+    <property name="qiLogName" value="pac2017_qi"/>
+    <property name="keyLogName" value="pac2017_key"/>
+
+    <springProfile name="production">
+        <!-- ベースディレクトリ -->
+        <property name="baseDir" value="/home/ec2-user/pepper/pac2017/log"/>
+    </springProfile>
+    <springProfile name="dev">
+        <!-- ベースディレクトリ -->
+        <property name="baseDir" value="c:/temp/log/pac2017"/>
+        <!-- ロガー -->
+        <logger name="jp.co.ysk.pepper.pac2017" level="DEBUG"/>
+    </springProfile>
+
+    <!-- アペンダー -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- ベースディレクトリ -->
+        <file>${baseDir}/log/${logName}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${baseDir}/log/_bk/${logName}.%d{yyyy-MM-dd}.zip</fileNamePattern>
+            <!-- keep 30 days worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d [%thread] [%-5level] %logger{35} - %msg %class %method%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>TRACE</level>
+        </filter>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d [%thread] [%-5level] %logger{35} - %msg %class %method%n</Pattern>
+        </layout>
+    </appender>
+    <appender name="PEPPER_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${baseDir}/pepperLog/${pepperLogName}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${baseDir}/pepperLog/_bk/${pepperLogName}.%d{yyyy-MM-dd}.zip</fileNamePattern>
+			<!-- keep 30 days worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d [%thread] [%-5level] %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="QI_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${baseDir}/qiLog/${qiLogName}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${baseDir}/qiLog/${qiLogName}.%d{yyyy-MM-dd}.zip</fileNamePattern>
+            <!-- keep 30 days worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d [%thread] [%-5level] %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="KEY_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${baseDir}/keyLog/${keyLogName}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${baseDir}/keyLog/_bk/${keyLogName}.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<!-- keep 30 days worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d [%thread] [%-5level] %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ロガーレベル -->
+    <root level="INFO">
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <logger name="jp.co.ysk.pepper.pac2017.logger.PepperLogger" level="INFO" additivity="false">
+        <appender-ref ref="PEPPER_LOG"/>
+    </logger>
+
+    <logger name="Key" level="INFO" additivity="false">
+    	<appender-ref ref="KEY_LOG"/>
+    </logger>
+
+    <logger name="jp.co.ysk.pepper.pac2017.logger.QiLogger" level="DEBUG" additivity="false">
+        <appender-ref ref="QI_LOG"/>
+    </logger>
+
+</configuration>

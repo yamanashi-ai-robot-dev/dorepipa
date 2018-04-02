@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta charset="utf-8" />
+    <title>PAC2017 test</title>
+    <script type="text/javascript" src="/js/lib/jquery-3.1.1.min.js" th:src="@{/js/lib/jquery-3.1.1.min.js}"></script>
+    <script type="text/javascript" src="/js/lib/stomp.js" th:src="@{/js/lib/stomp.js}"></script>
+    <script type="text/javascript" src="/js/stompUtil.js" th:src="@{/js/stompUtil.js}"></script>
+    <script type="text/javascript" src="/js/lib/reconnecting-websocket.min.js" th:src="@{/js/lib/reconnecting-websocket.min.js}"></script>
+    <script type="text/javascript">
+		$(document).ready(function() {
+		    var setData = function(msg) {
+		    	var obj = $.parseJSON(msg.body);
+		        $('#thead').after('<tr><td>' + obj.datetime + '</td><td>' + obj.id + '</td><td>' + obj.deviceId + '</td><td>' + obj.status + '</td></tr>');
+		        if ($('tr').length > 20) {
+		        	$('tr')[$('tr').length - 1].remove();
+		        }
+		    }
+
+		    StompUtil.prototype.onSubscribeTest = setData;
+		    var stompUtil = new StompUtil();
+		    stompUtil.connect.bind(stompUtil);
+		    stompUtil.connect();
+		})
+	</script>
+</head>
+<body>
+	<table style="table-layout: fixed;">
+	    <tr id="thead">
+	        <td>タイムスタンプ</td>
+	        <td>ID</td>
+	        <td>デバイスID</td>
+	        <td>1:ON/0:OFF</td>
+	    </tr>
+	</table>
+</body>
+</html>
